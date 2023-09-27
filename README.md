@@ -8,6 +8,7 @@ Today I started the Demo that is going to be used on the presentation for the De
 * AWS S3
 * AWS EC2
 * Snowflake
+
 The propouse of this talk is to show how dbt implements an easy way to configure, build and create a DataWarehouse on Cloud. I was thinking about using Redshift also but it depends.
 
 Today I had the chance to configure and run with success dbt-core on my machine, also configure an Snowflake account and database.
