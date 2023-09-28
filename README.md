@@ -15,11 +15,14 @@ Today I had the chance to configure and run with success dbt-core on my machine,
 Also I had the chance to create a connection between dbt-core with snowflake, and had a chance to execute a `dbt run` to build some models on Snowflake. To test the connection I execute `dbt debug`
 
 ## Questions 
-* How to load this project on Docker?
 * How to load this Docker into AWS?
 * How to create a security group and allow aws EC2 to run and connecto to Snowflake?
 * How to create an AWS Lambda that detect when a file is deposited on the AWS S3, and run the EC2 or instead of using EC2, execute Airflow to execute the pipeline?
 * How to configure AWS Airflow to Run EC2 on demand?
+
+### How to load this project on Docker?
+Fist things first, we need to define a docker file for this kind of task, we can find an example of a dockerFile an the official documentation. So we can base our docker file on it and be able to conteinerize our dbt solution. Don't forget to copy the profiles.yml and hide all the sensitive information in the envfile.
+https://github.com/dbt-labs/dbt-core/blob/main/docker/Dockerfile
 
 ## Next steps
 Start a research to find how to conteinerize the dbt solution and upload to AWS EC2, also how to allow this EC2 fargate to run and reach Snowflake to build test models.
@@ -32,3 +35,5 @@ Also create a Dag and be able to run the conteinerized solution.
 * https://docs.getdbt.com/docs/core/pip-install#using-virtual-environments
 * https://docs.snowflake.com/en/user-guide/key-pair-auth#configuring-key-pair-authentication
 * https://stackoverflow.com/a/77182992/7102575
+* https://github.com/dbt-labs/dbt-snowflake/pkgs/container/dbt-snowflake
+* https://github.com/dbt-labs/dbt-core/blob/main/docker/Dockerfile

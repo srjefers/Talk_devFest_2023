@@ -1,0 +1,26 @@
+config:
+  send_anonymous_usage_stats: False
+  
+dbt_core_demo:
+  outputs:
+    dev:
+      account: "{{ env_var('SF_ACCOUNT') }}"
+      database: "{{ env_var('SF_DATABASE') }}"
+      
+      # auth
+      user: "{{ env_var('SF_USER') }}"
+      password: "{{ env_var('SF_PASSWORD') }}"
+      
+      role: "{{ env_var('SF_DATABASE_ROLE') }}"
+      schema: "{{ env_var('SF_DATABASE_SCHEMA') }}"
+      threads: 200
+      type: snowflake
+      warehouse: "{{ env_var('SF_WAREHOUSE') }}"
+      
+      # optional
+      connect_retries: 0 
+      connect_timeout: 10 
+      retry_on_database_errors: False 
+      retry_all: False  
+      reuse_connections: False 
+  target: dev
