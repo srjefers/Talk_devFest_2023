@@ -23,9 +23,7 @@ ENV PYTHONIOENCODING=utf-8
 ENV LANG=C.UTF-8
 
 RUN python -m pip install --upgrade pip setuptools wheel --no-cache-dir
-
 WORKDIR /usr/app/dbt/
-ENTRYPOINT ["dbt"]
 
 FROM base as dbt-snowflake
 RUN python -m pip install --no-cache-dir "git+https://github.com/dbt-labs/${dbt_snowflake_ref}#egg=dbt-snowflake"
@@ -37,7 +35,6 @@ RUN mkdir -p /root/.dbt
 COPY profiles.yml /root/.dbt/profiles.yml
 
 # Copy source code
-COPY . /app
+COPY . /usr/app/dbt/
 
-# Start the dbt RPC server
-# CMD ["dbt"]
+ENTRYPOINT ["dbt"]
