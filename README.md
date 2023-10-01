@@ -39,7 +39,30 @@ aws-sg-demo-a
 
 ### How to configure AWS Airflow to Run EC2 on demand?
 I am dealing with this issue now, I am trying to use AWS MWAA to set an env of airflow easily but some configurations are going wrong on the side
-of the network. So I am eveluating creating a simple EC2 to set airflow there and then I guess that I will need to deal on HOW to execute thos run task from ec2.
+of the network. So I am eveluating creating a simple EC2 to set airflow there and then I guess that I will need to deal on HOW to execute thos run task from ec2 or intead we can use another alternative from the aws services such like aws step functions.
+
+Well, at the end I decided to go for StepFunctions, it would be much easier to work with them than defining an airflow env.
+```json
+{
+  "Comment": "Calling APIGW HTTP Endpoint",
+  "StartAt": "ECS RunTask",
+  "States": {
+    "ECS RunTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask",
+      "Parameters": {
+        "LaunchType": "FARGATE",
+        "Cluster": "arn:aws:ecs:us-east-1:466854116461:cluster/aws-ecs-demo",
+        "TaskDefinition": "arn:aws:ecs:us-east-1:466854116461:task-definition/aws-task-demo-a:1"
+      },
+      "End": true,
+      "Credentials": {
+        "RoleArn": "arn:aws:iam::466854116461:role/ecsTaskExecutionRole"
+      }
+    }
+  }
+}
+```
 
 ## Next steps
 Start a research to find how to conteinerize the dbt solution and upload to AWS EC2, also how to allow this EC2 fargate to run and reach Snowflake to build test models.
