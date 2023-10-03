@@ -15,7 +15,7 @@ Today I had the chance to configure and run with success dbt-core on my machine,
 Also I had the chance to create a connection between dbt-core with snowflake, and had a chance to execute a `dbt run` to build some models on Snowflake. To test the connection I execute `dbt debug`
 
 ## Questions 
-* How to create an AWS Lambda that detect when a file is deposited on the AWS S3, and run the EC2 or instead of using EC2, execute Airflow to execute the pipeline?
+* How to read s3 bucket and files from dbt and load them into snowflake?
 
 ### How to load this project on Docker?
 Fist things first, we need to define a docker file for this kind of task, we can find an example of a dockerFile an the official documentation. So we can base our docker file on it and be able to conteinerize our dbt solution. Don't forget to copy the profiles.yml and hide all the sensitive information in the envfile.
@@ -42,27 +42,71 @@ I am dealing with this issue now, I am trying to use AWS MWAA to set an env of a
 of the network. So I am eveluating creating a simple EC2 to set airflow there and then I guess that I will need to deal on HOW to execute thos run task from ec2 or intead we can use another alternative from the aws services such like aws step functions.
 
 Well, at the end I decided to go for StepFunctions, it would be much easier to work with them than defining an airflow env.
+
 ```json
 {
-  "Comment": "Calling APIGW HTTP Endpoint",
-  "StartAt": "ECS RunTask",
+  "StartAt": "Run Fargate Task",
+  "TimeoutSeconds": 3600,
   "States": {
-    "ECS RunTask": {
+    "Run Fargate Task": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::ecs:runTask",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
       "Parameters": {
         "LaunchType": "FARGATE",
         "Cluster": "arn:aws:ecs:us-east-1:466854116461:cluster/aws-ecs-demo",
-        "TaskDefinition": "arn:aws:ecs:us-east-1:466854116461:task-definition/aws-task-demo-a:1"
+        "TaskDefinition": "arn:aws:ecs:us-east-1:466854116461:task-definition/aws-task-demo-a:1",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0883c91cd73edfbfc",
+              "subnet-05a378b1515ec40aa",
+              "subnet-00c9ffaa0c22ec432",
+              "subnet-07dd11371247c17f7"
+            ],
+            "AssignPublicIp": "ENABLED"
+          }
+        }
       },
-      "End": true,
-      "Credentials": {
-        "RoleArn": "arn:aws:iam::466854116461:role/ecsTaskExecutionRole"
-      }
+      "End": true
     }
   }
 }
 ```
+
+Its funny, maybe I just had not enough sleep but I was dealing with an issue related to roles, but the role parameter is optional, I was dealing with it for a while but now is fixed and the execution of this StateMachine is working.
+
+### How to create an AWS Lambda that detect when a file is deposited on the AWS S3, and run the EC2 or instead of using EC2, execute Airflow to execute the pipeline?
+
+There are some templetes that makes the task easy to deploy a lambda function, also in the aws docs you can find how to deploy a lambda function that triggers an aws step functions task. You need also to grant some access to the role that you created to the aws lambda.
+
+```python
+import json
+import urllib.parse
+import boto3
+
+print('Loading function')
+
+s3 = boto3.client('s3')
+sf = boto3.client('stepfunctions', region_name = 'us-east-1')
+
+def lambda_handler(event, context):
+
+    try:
+        print("SF execution status starting ----> ")
+        input_dict = {'key': 'value'}
+        response_sf = sf.start_execution(
+            stateMachineArn = 'arn:aws:states:us-east-1:466854116461:stateMachine:aws-stepfunc-demo-fargate1',
+            input = json.dumps(input_dict)
+        )
+    
+        print("SF execution status --->>>>" + str(response_sf))
+        
+        return json.dumps(response_sf, default=str)
+    except Exception as e:
+        print(e)
+        raise e
+```
+
 
 ## Next steps
 Start a research to find how to conteinerize the dbt solution and upload to AWS EC2, also how to allow this EC2 fargate to run and reach Snowflake to build test models.
@@ -79,3 +123,4 @@ Also create a Dag and be able to run the conteinerized solution.
 * https://github.com/dbt-labs/dbt-core/blob/main/docker/Dockerfile
 * https://repost.aws/knowledge-center/mwaa-stuck-creating-state
 * https://docs.aws.amazon.com/mwaa/latest/userguide/vpc-vpe-create-access.html
+* https://docs.aws.amazon.com/step-functions/latest/dg/concepts-invoke-sfn.html
