@@ -109,10 +109,36 @@ def lambda_handler(event, context):
 As part of my research to find a way to have the raw data that is being deposited on the aws s3 bucket, I finded that snowflake provides a way to read the data on aws by creating `stage external` tables, that allows snowflake to reach the raw data from aws and get it into snowflake.
 
 ```sql
-CREATE OR REPLACE STAGE "my_s3_stage"
- URL = 's3://neopiu/historical-data/'
- CREDENTIALS=(AWS_KEY_ID='<AWS_KEY>' AWS_SECRET_KEY='<AWS_SECRET>')
- FILE_FORMAT = (TYPE = 'CSV');
+CREATE STORAGE INTEGRATION s3_int
+  TYPE = EXTERNAL_STAGE
+  STORAGE_PROVIDER = 'S3'
+  ENABLED = TRUE
+  STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::466854116461:role/demo-snowflake-role'
+  STORAGE_ALLOWED_LOCATIONS = ('s3://bucket-demo-dbt/raw-data/');
+
+DESC INTEGRATION s3_int;
+
+GRANT CREATE STAGE ON SCHEMA public TO ROLE SRJEFERS_READER;
+GRANT CREATE FILE FORMAT ON SCHEMA public TO ROLE SRJEFERS_READER;
+
+GRANT USAGE ON INTEGRATION s3_int TO ROLE SRJEFERS_READER;
+
+USE SCHEMA TEST_CONNECTION.public;
+
+CREATE STAGE my_s3_stage3
+  STORAGE_INTEGRATION = s3_int
+  URL = 's3://bucket-demo-dbt/raw-data/'
+  FILE_FORMAT = (TYPE = 'CSV');
+
+LIST @MY_S3_STAGE3;
+
+CREATE TABLE test_schema.test AS 
+SELECT 
+   -- metadata$filename, 
+   -- metadata$file_row_number, 
+   t.$1, 
+   t.$2
+FROM @MY_S3_STAGE3 t;
 ```
 
 ## Next steps
@@ -132,5 +158,7 @@ Add external stages to the dbt project, and load the data that is in aws s3 to s
 * http://mamykin.com/posts/fast-data-load-snowflake-dbt/
 * https://medium.com/@dipan.saha/migrating-historical-and-real-time-data-from-aws-s3-to-snowflake-402ccfd4c423
 * https://medium.com/slateco-blog/doing-more-with-less-usingdbt-to-load-data-from-aws-s3-to-snowflake-via-external-tables-a699d290b93f
+* https://docs.snowflake.com/en/user-guide/data-load-s3-allow
 * https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration
+* https://docs.snowflake.com/en/user-guide/querying-stage
 * https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/
