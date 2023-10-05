@@ -15,8 +15,6 @@ Today I had the chance to configure and run with success dbt-core on my machine,
 Also I had the chance to create a connection between dbt-core with snowflake, and had a chance to execute a `dbt run` to build some models on Snowflake. To test the connection I execute `dbt debug`
 
 ## Questions 
-* How to read s3 bucket and files from dbt and load them into snowflake?
-
 ### How to load this project on Docker?
 Fist things first, we need to define a docker file for this kind of task, we can find an example of a dockerFile an the official documentation. So we can base our docker file on it and be able to conteinerize our dbt solution. Don't forget to copy the profiles.yml and hide all the sensitive information in the envfile.
 https://github.com/dbt-labs/dbt-core/blob/main/docker/Dockerfile
@@ -27,7 +25,7 @@ https://github.com/dbt-labs/dbt-core/blob/main/docker/Dockerfile
 Firts, I created a new aws account. Lest create the next list of components: 
 * awsCluster        -> aws-ecs-demo
 * awsTaskDefinition -> aws-task-demo-a:1 
-* awsNetworkSubnet  -> 
+* awsVPC            -> 
 * awsSG             -> aws-sg-demo-a
 * awsEcr            -> 466854116461.dkr.ecr.us-east-1.amazonaws.com/aws-repo-dbt-demo
 
@@ -107,11 +105,18 @@ def lambda_handler(event, context):
         raise e
 ```
 
+### How to read s3 bucket and files from dbt and load them into snowflake?
+As part of my research to find a way to have the raw data that is being deposited on the aws s3 bucket, I finded that snowflake provides a way to read the data on aws by creating `stage external` tables, that allows snowflake to reach the raw data from aws and get it into snowflake.
+
+```sql
+CREATE OR REPLACE STAGE "my_s3_stage"
+ URL = 's3://neopiu/historical-data/'
+ CREDENTIALS=(AWS_KEY_ID='<AWS_KEY>' AWS_SECRET_KEY='<AWS_SECRET>')
+ FILE_FORMAT = (TYPE = 'CSV');
+```
 
 ## Next steps
-Start a research to find how to conteinerize the dbt solution and upload to AWS EC2, also how to allow this EC2 fargate to run and reach Snowflake to build test models.
-
-Also create a Dag and be able to run the conteinerized solution.
+Add external stages to the dbt project, and load the data that is in aws s3 to snowflake. Being able to execute a query to see the data on Snowflake. Transform that data and build a model with the data.
 
 ## Some links with information
 * https://docs.aws.amazon.com/mwaa/latest/userguide/samples-lambda.html
@@ -124,3 +129,8 @@ Also create a Dag and be able to run the conteinerized solution.
 * https://repost.aws/knowledge-center/mwaa-stuck-creating-state
 * https://docs.aws.amazon.com/mwaa/latest/userguide/vpc-vpe-create-access.html
 * https://docs.aws.amazon.com/step-functions/latest/dg/concepts-invoke-sfn.html
+* http://mamykin.com/posts/fast-data-load-snowflake-dbt/
+* https://medium.com/@dipan.saha/migrating-historical-and-real-time-data-from-aws-s3-to-snowflake-402ccfd4c423
+* https://medium.com/slateco-blog/doing-more-with-less-usingdbt-to-load-data-from-aws-s3-to-snowflake-via-external-tables-a699d290b93f
+* https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration
+* https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/
