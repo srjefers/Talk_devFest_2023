@@ -141,6 +141,8 @@ SELECT
 FROM @MY_S3_STAGE3 t;
 ```
 
+As an additional, I am going to add an extra step that is related to the dbt package called `dbt-labs/dbt_external_tables` to be able to execute and refresh all the external stages that has been created. 
+
 ## Next steps
 Add external stages to the dbt project, and load the data that is in aws s3 to snowflake. Being able to execute a query to see the data on Snowflake. Transform that data and build a model with the data.
 
