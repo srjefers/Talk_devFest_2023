@@ -1,0 +1,19 @@
+version: 2
+sources:
+  - name: external_my_s3_stage3_0
+    database: TEST_CONNECTION
+    schema: public
+    loader: S3
+    tables:
+      - name: my_s3_stage3_0
+        ext_full_refresh: true
+        description: This is the first external table created as stage from dbt.
+        external:
+        location: "s3://bucket-demo-dbt/raw-data/"  
+        file_format: >
+          (TYPE = CSV FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 TRIM_SPACE = TRUE ESCAPE_UNENCLOSED_FIELD = NONE FIELD_DELIMITER = ',')
+        columns:
+          - name: id
+            data_type: varchar 
+          - name: email
+            data_type: varchar 
