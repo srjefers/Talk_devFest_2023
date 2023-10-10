@@ -147,6 +147,8 @@ As an additional, I am going to add an extra step that is related to the dbt pac
 
 > Posted a quetion on StackOverflow -> https://stackoverflow.com/questions/77248767/dbt-external-tables-not-being-executed
 
+I saw that maybe those external tables are not supposed to be executed from dbt, on each run, I am going to strar trying to check how those external stages really works and if is requiered to build them on every execution. Also I am starting to look at kaggle for some datasets to use.
+
 ## Next steps
 Add external stages to the dbt project, and load the data that is in aws s3 to snowflake. Being able to execute a query to see the data on Snowflake. Transform that data and build a model with the data.
 
