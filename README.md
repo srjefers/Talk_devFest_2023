@@ -149,6 +149,28 @@ As an additional, I am going to add an extra step that is related to the dbt pac
 
 I saw that maybe those external tables are not supposed to be executed from dbt, on each run, I am going to strar trying to check how those external stages really works and if is requiered to build them on every execution. Also I am starting to look at kaggle for some datasets to use.
 
+I am going to start testing a different approach, it means that snowflake is able to refresh the metadata by itselft without any other external tool, at least for external stages which data source is located in AWS S3.
+
+```sql
+CREATE or replace STAGE my_s3_stage0
+  STORAGE_INTEGRATION = s3_int
+  URL = 's3://bucket-demo-dbt/raw-data/'
+  DIRECTORY = (
+    ENABLE = true
+    AUTO_REFRESH = true
+  )
+  FILE_FORMAT = (
+      TYPE = 'CSV' 
+      SKIP_HEADER = 1
+      SKIP_BLANK_LINES = TRUE
+    );
+
+SELECT 
+   t.$1, 
+   t.$2
+FROM @MY_S3_STAGE0 t;
+```
+
 ## Next steps
 Add external stages to the dbt project, and load the data that is in aws s3 to snowflake. Being able to execute a query to see the data on Snowflake. Transform that data and build a model with the data.
 
@@ -170,3 +192,4 @@ Add external stages to the dbt project, and load the data that is in aws s3 to s
 * https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration
 * https://docs.snowflake.com/en/user-guide/querying-stage
 * https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/
+* https://docs.snowflake.com/en/sql-reference/sql/create-stage#external-stages
