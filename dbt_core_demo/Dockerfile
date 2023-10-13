@@ -37,4 +37,4 @@ COPY profiles.yml /root/.dbt/profiles.yml
 # Copy source code
 COPY . /usr/app/dbt/
 
-# ENTRYPOINT ["dbt"]
+ENTRYPOINT ["python","execute_dbt.py"]
