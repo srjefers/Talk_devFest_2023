@@ -19,7 +19,11 @@ Also I had the chance to create a connection between dbt-core with snowflake, an
 Fist things first, we need to define a docker file for this kind of task, we can find an example of a dockerFile an the official documentation. So we can base our docker file on it and be able to conteinerize our dbt solution. Don't forget to copy the profiles.yml and hide all the sensitive information in the envfile.
 https://github.com/dbt-labs/dbt-core/blob/main/docker/Dockerfile
 
-`sudo docker run -i -t dbt:latest run`
+`docker run -i -t dbt:latest run`
+
+Also we can execute the next comand to know that our connection is working succesfully
+
+`docker run -i -t dbt:latest debug`
 
 ### How to load this Docker into AWS?
 Firts, I created a new aws account. Lest create the next list of components: 
@@ -151,12 +155,16 @@ I saw that maybe those external tables are not supposed to be executed from dbt,
 
 I am going to start testing a different approach, it means that snowflake is able to refresh the metadata by itselft without any other external tool, at least for external stages which data source is located in AWS S3.
 
-```sql
-```
+**Solution**
+
+I tried to use SQS as I mentioned before it was a great way to fix the pipe executions, it means that I was going to be able to execute them everytime when I had a new/update file on the bucket, since Snowflake provides me a sqs defined by itself from the creation of each PIPE, I started to look for diferent ways to execute it on cascade but since I had no much time to look for another way I decided to look on an old dbt package that I saw that look great to me to implement. `dbt-external-tables` allows me to execute those tables, from the stages that I defined that are connected via snowflake integration to aws s3, I got the chance to find a way to solve an issue that I got related to the execution, it was very simple since the indent that I got ont the yml was not accurate. Just updating the file gives me the chace to execute it and being able to query those table as sources. 
+
+Was great and good enough, now the solution is a dockerized and running on ecs, being executed each time when a file is being uploaded/modified on the s3 bucket, with a lambda function that execute a simple step function.
+
 
 ## Next steps
 
-It wors on SQS services, I tired to use sns to have an extra service over the sqs but I got many issues when I was trying to configure it, also sqs was a much easier way to set, now I am wondering how to execute this sqs from aws lambda, or another service, 
+It works on SQS services, I tired to use sns to have an extra service over the sqs but I got many issues when I was trying to configure it, also sqs was a much easier way to set, now I am wondering how to execute this sqs from aws lambda, or another service, 
 
 ## Some links with information
 * https://docs.aws.amazon.com/mwaa/latest/userguide/samples-lambda.html
