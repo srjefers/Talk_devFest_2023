@@ -1,8 +1,8 @@
 version: 2
 
 sources:
-    - name: external_demo
+    - name: silver_demo
       database: TEST_CONNECTION
       schema: TEST_SCHEMA
       tables:
-        - name: EXT_TELCO_CUST_CHURN
+        - name: tbl_telco_cust_churn

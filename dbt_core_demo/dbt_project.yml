@@ -28,8 +28,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 models:
   demo-warehouse:
-    #gold:
     silver:
       test_schema:
         +schema: test_schema
         materialized: table
+    gold:
+      test_schema:
+        +schema: test_schema
+        materialized: view
