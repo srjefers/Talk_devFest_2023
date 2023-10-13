@@ -1,3 +1,8 @@
+{{
+  config(
+    materialized = 'table',
+  )
+}}
 with final as (
     select *
     from {{ source('silver_demo', 'my_s3_stage01') }}
