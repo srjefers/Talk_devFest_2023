@@ -173,6 +173,11 @@ Was great and good enough, now the solution is a dockerized and running on ecs, 
 
 It works on SQS services, I tired to use sns to have an extra service over the sqs but I got many issues when I was trying to configure it, also sqs was a much easier way to set, now I am wondering how to execute this sqs from aws lambda, or another service, 
 
+# Link to slides
+
+> https://docs.google.com/presentation/d/1PvdQbBnsJz5SV43yv9B8yIuWp_u7_MMuqvxWO9aMfAY/edit?usp=sharing
+
+
 ## Some links with information
 * https://docs.aws.amazon.com/mwaa/latest/userguide/samples-lambda.html
 * https://docs.getdbt.com/faqs/Warehouse/connecting-to-two-dbs-not-allowed
