@@ -1,0 +1,28 @@
+{
+    "Comment": "An example of the Amazon States Language for notification on an AWS Fargate task completion",
+    "StartAt": "Run Fargate Task",
+    "TimeoutSeconds": 3600,
+    "States": {
+      "Run Fargate Task": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::ecs:runTask.sync",
+        "Parameters": {
+          "LaunchType": "FARGATE",
+          "Cluster": "arn:aws:ecs:us-east-1:466854116461:cluster/aws-ecs-demo",
+          "TaskDefinition": "arn:aws:ecs:us-east-1:466854116461:task-definition/aws-task-demo-a:11",
+          "NetworkConfiguration": {
+            "AwsvpcConfiguration": {
+              "Subnets": [
+                "subnet-0883c91cd73edfbfc",
+                "subnet-05a378b1515ec40aa",
+                "subnet-00c9ffaa0c22ec432",
+                "subnet-07dd11371247c17f7"
+              ],
+              "AssignPublicIp": "ENABLED"
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  }

@@ -145,6 +145,13 @@ SELECT
 FROM @MY_S3_STAGE3 t;
 ```
 
+Access point was also defined poiting to s3.
+
+```
+s3://arn:aws:s3:us-east-1:466854116461:accesspoint/snowflake-vpc
+arn:aws:s3:us-east-1:466854116461:accesspoint/snowflake-vpc
+```
+
 
 As an additional, I am going to add an extra step that is related to the dbt package called `dbt-labs/dbt_external_tables` to be able to execute and refresh all the external stages that has been created. 
 

@@ -1,0 +1,124 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:466854116461:task-definition/aws-task-demo-a:11",
+    "containerDefinitions": [
+        {
+            "name": "aws-repo-dbt-demo",
+            "image": "466854116461.dkr.ecr.us-east-1.amazonaws.com/aws-repo-dbt-demo",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "aws-repo-dbt-demo-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                },
+                {
+                    "name": "aws-repo-dbt-demo-8581-tcp",
+                    "containerPort": 8581,
+                    "hostPort": 8581,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                },
+                {
+                    "name": "aws-repo-dbt-demo-8580-tcp",
+                    "containerPort": 8580,
+                    "hostPort": 8580,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "SF_ACCOUNT",
+                    "value": "teb49469.us-east-1"
+                },
+                {
+                    "name": "SF_DATABASE",
+                    "value": "TEST_CONNECTION"
+                },
+                {
+                    "name": "SF_PASSWORD",
+                    "value": "Kassandra00."
+                },
+                {
+                    "name": "SF_DATABASE_ROLE",
+                    "value": "SRJEFERS_READER"
+                },
+                {
+                    "name": "SF_DATABASE_SCHEMA",
+                    "value": "test_schema"
+                },
+                {
+                    "name": "SF_USER",
+                    "value": "srjefers"
+                },
+                {
+                    "name": "SF_WAREHOUSE",
+                    "value": "COMPUTE_WH"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/aws-task-demo-a",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "family": "aws-task-demo-a",
+    "executionRoleArn": "arn:aws:iam::466854116461:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 11,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2023-10-13T03:18:32.175Z",
+    "registeredBy": "arn:aws:iam::466854116461:root",
+    "tags": []
+}
