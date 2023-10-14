@@ -84,9 +84,11 @@ from TEST_CONNECTION.PUBLIC.MY_S3_STAGE3;
 LIST @MY_S3_STAGE3;
 
 -- we can also define a file format on our schema
+
 create or replace file format myformat_comma type = 'csv' FIELD_DELIMITER = ',';
 
 -- QUERY 005
+use schema TEST_CONNECTION.TEST_SCHEMA;
 create or replace STAGE my_s3_stage0
   STORAGE_INTEGRATION = s3_int
   url = 's3://bucket-demo-dbt/raw-data/'

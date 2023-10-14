@@ -2,3 +2,4 @@ compose.yaml
 *.env
 *.csv
 *.png
+logs/

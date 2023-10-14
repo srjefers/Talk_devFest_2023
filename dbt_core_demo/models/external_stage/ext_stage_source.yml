@@ -52,6 +52,7 @@ sources:
           - name: CHURN
             data_type: varchar 
         external:
+          auto_refresh: true
           location: "@STG_S3_TELCO_CUST_CHURN"  
           file_format: '( type = csv skip_header = 1 )'
           
