@@ -3,3 +3,4 @@ compose.yaml
 *.csv
 *.png
 logs/
+.DS_Store
